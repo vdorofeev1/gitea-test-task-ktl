@@ -7,19 +7,19 @@ import org.apache.commons.codec.digest.DigestUtils
 
 
 class Git {
-    internal var head: Commit?
+    internal var head: Branch
     internal var blobs: MutableMap<String, Blob>
 
     init {
-        head = null
+        head = Branch("master", null)
         blobs = mutableMapOf()
     }
 
     fun commit(tree: Tree, message: String, author: String): Commit {
         require(tree.isNotLocked()) { "Tree is locked!" }
-        return Commit(tree, message, author, head).also {
+        return Commit(tree, message, author, head.getCommit()).also {
             tree.lock()
-            head = it
+            head.setCommit(it)
         }
     }
 
@@ -31,8 +31,10 @@ class Git {
 
     fun tree() = Tree()
 
+    fun branch(name: String) = Branch(name, head.getCommit())
+
     fun log(hash: String = "", message: String = "", author: String = "") {
-        var current = head
+        var current = head.getCommit()
         while (current != null) {
             if (current.hash().startsWith(hash) &&
                 current.message.contains(message) &&
@@ -45,7 +47,7 @@ class Git {
     }
 
     fun findByHash(hash: String): Commit {
-        var current = head
+        var current = head.getCommit()
         while (current != null && current.hash() != hash) {
             current = current.parent
         }
@@ -54,7 +56,7 @@ class Git {
     }
 
     fun findByMessage(message: String): Commit {
-        var current = head
+        var current = head.getCommit()
         while (current != null && current.message != message) {
             current = current.parent
         }
@@ -63,7 +65,7 @@ class Git {
     }
 
     fun findByAuthor(author: String): Commit {
-        var current = head
+        var current = head.getCommit()
         while (current != null && current.author != author) {
             current = current.parent
         }

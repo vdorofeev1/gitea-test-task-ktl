@@ -37,7 +37,7 @@ class GitTest {
         val initialCommit = git.commit(defaultTree, defaultMessage, defaultAuthor)
 
         assertNull(initialCommit.parent)
-        assertEquals(initialCommit, git.head)
+        assertEquals(initialCommit, git.head.getCommit())
         assert(initialCommit.mainTree.isLocked())
 
         assertFailsWith<Exception> { git.commit(defaultTree, defaultMessage, defaultAuthor) }
@@ -56,7 +56,7 @@ class GitTest {
         val secondCommit = git.commit(secondTree, defaultMessage, defaultAuthor)
 
         assertEquals(firstCommit, secondCommit.parent)
-        assertEquals(secondCommit, git.head)
+        assertEquals(secondCommit, git.head.getCommit())
     }
 
     @Test
