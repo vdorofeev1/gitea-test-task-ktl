@@ -5,7 +5,6 @@ import com.jetbrains.git.objects.Tree
 import org.apache.commons.codec.digest.DigestUtils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 

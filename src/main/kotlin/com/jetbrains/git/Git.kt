@@ -39,7 +39,11 @@ class Git {
 
     fun tree() = Tree()
 
-    fun branch(name: String) = Branch(name, head.getCommit()).also { branches[name] = it }
+    fun branch(name: String): Branch {
+        require(!branches.containsKey(name)) { "Branch with name $name already exists." }
+
+        return Branch(name, head.getCommit()).also { branches[name] = it }
+    }
 
     fun checkout(name: String) {
         require(branches.containsKey(name)) { "No branch with name '$name'." }

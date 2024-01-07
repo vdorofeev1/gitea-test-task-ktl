@@ -4,6 +4,7 @@ import com.jetbrains.git.Git.Companion.MASTER
 import com.jetbrains.git.objects.Tree
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertFailsWith
 
 
 class BranchTest: GitTest() {
@@ -13,14 +14,7 @@ class BranchTest: GitTest() {
         assertEquals(git.head.name, MASTER)
         assertEquals(git.head.getCommit(), commit)
 
-        val testBranch = git.branch("test")
-        git.checkout("test")
-        assertEquals(git.head, testBranch)
-        assertEquals(git.head.getCommit(), commit)
-
-        git.checkout(MASTER)
-        assertEquals(git.head.name, MASTER)
-        assertEquals(git.head.getCommit(), commit)
+        assertFailsWith<Exception> { git.branch(MASTER) }
     }
 
     @Test
