@@ -7,12 +7,13 @@ import org.apache.commons.codec.digest.DigestUtils
 
 
 class Git {
-    internal var head: Branch
-    internal var blobs: MutableMap<String, Blob>
+
+    internal var head: Branch = Branch("master", null)
+    internal var blobs: MutableMap<String, Blob> = mutableMapOf()
+    internal var branches: MutableList<Branch> = mutableListOf()
 
     init {
-        head = Branch("master", null)
-        blobs = mutableMapOf()
+        branches.add(head)
     }
 
     fun commit(tree: Tree, message: String, author: String): Commit {
@@ -31,7 +32,13 @@ class Git {
 
     fun tree() = Tree()
 
-    fun branch(name: String) = Branch(name, head.getCommit())
+    fun branch(name: String) = Branch(name, head.getCommit()).also { branches.add(it) }
+
+    fun checkout(name: String) {
+        val branch = branches.find { it.name == name }
+        requireNotNull(branch) { "No branch with given name." }
+        head = branch
+    }
 
     fun log(hash: String = "", message: String = "", author: String = "") {
         var current = head.getCommit()
@@ -41,8 +48,8 @@ class Git {
                 current.author.contains(author)
             ) {
                 current.printContents()
-                current = current.parent
             }
+            current = current.parent
         }
     }
 
