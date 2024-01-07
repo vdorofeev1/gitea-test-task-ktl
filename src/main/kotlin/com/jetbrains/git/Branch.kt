@@ -10,5 +10,4 @@ class Branch internal constructor(
     }
 
     fun getCommit() = commit
-
 }

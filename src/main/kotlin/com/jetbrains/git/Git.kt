@@ -7,13 +7,20 @@ import org.apache.commons.codec.digest.DigestUtils
 
 
 class Git {
+    companion object {
+        internal fun sha1(data: String): String {
+            return DigestUtils.sha1Hex(data)
+        }
 
-    internal var head: Branch = Branch("master", null)
+        var MASTER = "master"
+    }
+
+    internal var head: Branch = Branch(MASTER, null)
     internal var blobs: MutableMap<String, Blob> = mutableMapOf()
-    internal var branches: MutableList<Branch> = mutableListOf()
+    internal var branches: MutableMap<String, Branch> = mutableMapOf()
 
     init {
-        branches.add(head)
+        branches[MASTER] = head
     }
 
     fun commit(tree: Tree, message: String, author: String): Commit {
@@ -32,11 +39,12 @@ class Git {
 
     fun tree() = Tree()
 
-    fun branch(name: String) = Branch(name, head.getCommit()).also { branches.add(it) }
+    fun branch(name: String) = Branch(name, head.getCommit()).also { branches[name] = it }
 
     fun checkout(name: String) {
-        val branch = branches.find { it.name == name }
-        requireNotNull(branch) { "No branch with given name." }
+        require(branches.containsKey(name)) { "No branch with name '$name'." }
+
+        val branch = branches.getValue(name)
         head = branch
     }
 
@@ -76,13 +84,7 @@ class Git {
         while (current != null && current.author != author) {
             current = current.parent
         }
-        requireNotNull(current) { "Commit with message '$author' not found." }
+        requireNotNull(current) { "Commit with author '$author' not found." }
         return current
-    }
-
-    companion object {
-        internal fun sha1(data: String): String {
-            return DigestUtils.sha1Hex(data)
-        }
     }
 }
