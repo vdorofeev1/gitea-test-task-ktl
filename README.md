@@ -32,8 +32,19 @@ val anotherBlob = git.blob("another data")
 tree.add(anotherBlob) // error
 
 anotherTree.add(anotherBlob)
-val anotherCommit = git.commit(anotherTree, "another message", "author)
+val anotherCommit = git.commit(anotherTree, "another message", "author")
+
 println(anotherCommit.parent == commit) // true
+```
+
+### Branch
+The Branch serves as a pointer to the last commit, adding the possibility to create a new sequence of commits. Users can switch between branches to manage different lines of development. When instance of Git is created, `head` is set to the `Branch` with name `"master"`
+```
+println(git.getHead().getName() == "master") // true
+
+val branch = git.branch("test")
+
+println(git.getHead().getName() == "test") // false
 ```
 
 ## Library Features
@@ -55,6 +66,15 @@ The library includes functions (`findByHash`, `findByMessage`, `findByAuthor`) t
 val commit1 = git.findByHash(hash)
 val commit2 = git.findByMesssage(message)
 val commit3 = git.findByAuthor(author)
+```
+
+### Switch to another branch
+The library allows to switch between branches using their names
+```
+val branch = git.branch("test")
+git.checkout("test")
+
+println(git.getHead() == branch) // true
 ```
 
 
