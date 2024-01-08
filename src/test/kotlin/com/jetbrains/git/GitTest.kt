@@ -47,26 +47,33 @@ open class GitTest {
 
     @Test
     fun findByHashTest() {
-        val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
-        val hash = commit.hash()
+        val commit1 = git.commit(defaultTree, defaultMessage, defaultAuthor)
+        val hash1 = commit1.hash()
+        val commit2 = git.commit(git.tree(), "message2", "author2")
+        val hash2 = commit2.hash()
 
-        assertEquals(commit, git.findByHash(hash))
+        assertEquals(commit1, git.findByHash(hash1))
+        assertEquals(commit2, git.findByHash(hash2))
         assertFailsWith<Exception> { git.findByHash("") }
     }
 
     @Test
     fun findByMessageTest() {
-        val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
+        val commit1 = git.commit(defaultTree, "commit1", defaultAuthor)
+        val commit2 = git.commit(git.tree(), "commit2", defaultAuthor)
 
-        assertEquals(commit, git.findByMessage(defaultMessage))
+        assertEquals(commit1, git.findByMessage("commit1"))
+        assertEquals(commit2, git.findByMessage("commit2"))
         assertFailsWith<Exception> { git.findByMessage("") }
     }
 
     @Test
     fun findByAuthorTest() {
-        val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
+        val commit1 = git.commit(defaultTree, defaultMessage, "author1")
+        val commit2 = git.commit(git.tree(), defaultMessage, "author2")
 
-        assertEquals(commit, git.findByAuthor(defaultAuthor))
+        assertEquals(commit1, git.findByAuthor("author1"))
+        assertEquals(commit2, git.findByAuthor("author2"))
         assertFailsWith<Exception> { git.findByAuthor("") }
     }
 
