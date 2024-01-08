@@ -10,4 +10,6 @@ class Branch internal constructor(
     }
 
     fun getCommit() = commit
+
+    fun getName() = name
 }

@@ -20,21 +20,33 @@ open class GitTest {
         git = Git()
     }
 
+    fun logHelper(git: Git) {
+
+    }
+
     @Test
     fun logTest() {
-        val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
-        val expectedOutput = "Hash: ${commit.hash()}\n" +
-                "Message: ${commit.message}\n" +
-                "Author: ${commit.author}\n" +
-                "Main Tree: ${commit.mainTree.hash()}\n" +
-                "Parent: null\n\n"
-        val actualOutput = SystemLambda.tapSystemOut { git.log(hash = "0f34c", message = "mes", author = "a") }
+        val commit1 = git.commit(defaultTree, "commit1", defaultAuthor)
+        val commit2 = git.commit(git.tree(), "commit2", defaultAuthor)
+        var expectedOutput = commit1.toString() + "\n"
+        var actualOutput = SystemLambda.tapSystemOut { git.log(hash = "b1ef6", message = "com", author = "a") }
+        assertEquals(expectedOutput, actualOutput)
+
+        actualOutput = SystemLambda.tapSystemOut { git.log(hash = "b1ef6") }
+        assertEquals(expectedOutput, actualOutput)
+
+        expectedOutput = commit2.toString() + "\n" + commit1.toString() + "\n"
+        actualOutput = SystemLambda.tapSystemOut { git.log(message = "commit") }
+        assertEquals(expectedOutput, actualOutput)
+
+        expectedOutput = commit2.toString() + "\n"
+        actualOutput = SystemLambda.tapSystemOut { git.log(message = "commit2") }
         assertEquals(expectedOutput, actualOutput)
 
     }
 
     @Test
-    fun searchByHashTest() {
+    fun findByHashTest() {
         val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
         val hash = commit.hash()
 
@@ -43,7 +55,7 @@ open class GitTest {
     }
 
     @Test
-    fun searchByMessageTest() {
+    fun findByMessageTest() {
         val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
 
         assertEquals(commit, git.findByMessage(defaultMessage))
@@ -51,7 +63,7 @@ open class GitTest {
     }
 
     @Test
-    fun searchByAuthorTest() {
+    fun findByAuthorTest() {
         val commit = git.commit(defaultTree, defaultMessage, defaultAuthor)
 
         assertEquals(commit, git.findByAuthor(defaultAuthor))

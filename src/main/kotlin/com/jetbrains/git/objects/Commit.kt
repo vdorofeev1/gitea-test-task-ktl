@@ -17,17 +17,14 @@ class Commit internal constructor(val mainTree: Tree,
     }
 
     fun printContents() {
-        println("""
-            |Hash: $hash
-            |Message: $message
-            |Author: $author
-            |Main Tree: ${mainTree.hash()}
-            |Parent: $parent
-        """.trimMargin() + "\n")
+        println(this.toString())
     }
 
     private fun calculateHash(): String = Git.sha1(mainTree.hash() + message + author + commitTime)
 
     override fun hash(): String = hash
+    override fun toString(): String {
+        return "Commit(hash='$hash', author='$author', message='$message', parent=${parent?.hash() ?: "null"})"
+    }
 
 }

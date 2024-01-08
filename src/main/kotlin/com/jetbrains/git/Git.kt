@@ -16,8 +16,8 @@ class Git {
     }
 
     internal var head: Branch = Branch(MASTER, null)
-    internal var blobs: MutableMap<String, Blob> = mutableMapOf()
-    internal var branches: MutableMap<String, Branch> = mutableMapOf()
+    internal val blobs: MutableMap<String, Blob> = mutableMapOf()
+    internal val branches: MutableMap<String, Branch> = mutableMapOf()
 
     init {
         branches[MASTER] = head
@@ -41,15 +41,12 @@ class Git {
 
     fun branch(name: String): Branch {
         require(!branches.containsKey(name)) { "Branch with name $name already exists." }
-
         return Branch(name, head.getCommit()).also { branches[name] = it }
     }
 
     fun checkout(name: String) {
         require(branches.containsKey(name)) { "No branch with name '$name'." }
-
-        val branch = branches.getValue(name)
-        head = branch
+        head = branches.getValue(name)
     }
 
     fun log(hash: String = "", message: String = "", author: String = "") {
@@ -91,4 +88,6 @@ class Git {
         requireNotNull(current) { "Commit with author '$author' not found." }
         return current
     }
+
+    fun getHead() = head
 }
